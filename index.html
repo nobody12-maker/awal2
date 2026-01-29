@@ -1,123 +1,202 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Kalkulator Sederhana</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #1e1e2f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<meta charset="UTF-8">
+<title>Kalkulator Modern</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .calculator {
-            background: #2a2a3d;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            width: 280px;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+    }
 
-        .display {
-            width: 100%;
-            height: 50px;
-            font-size: 22px;
-            margin-bottom: 15px;
-            text-align: right;
-            padding-right: 10px;
-            border-radius: 8px;
-            border: none;
-        }
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    }
 
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
+    .calculator {
+        width: 340px;
+        backdrop-filter: blur(15px);
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        color: white;
+    }
 
-        button {
-            height: 50px;
-            font-size: 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+    .display {
+        background: rgba(0,0,0,0.4);
+        border-radius: 12px;
+        padding: 10px;
+        text-align: right;
+        margin-bottom: 15px;
+    }
 
-        .operator {
-            background: #ff9f43;
-            color: #000;
-        }
+    .history {
+        font-size: 14px;
+        opacity: 0.7;
+        min-height: 18px;
+    }
 
-        .number {
-            background: #404060;
-            color: white;
-        }
+    .result {
+        font-size: 28px;
+        word-wrap: break-word;
+    }
 
-        .equal {
-            background: #10ac84;
-            color: white;
-            grid-column: span 2;
-        }
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
 
-        .clear {
-            background: #ee5253;
-            color: white;
-            grid-column: span 2;
-        }
-    </style>
+    button {
+        height: 55px;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.2s;
+        color: white;
+        background: rgba(255,255,255,0.15);
+    }
+
+    button:hover {
+        transform: scale(1.05);
+        background: rgba(255,255,255,0.25);
+    }
+
+    .operator {
+        background: #f39c12;
+        color: black;
+    }
+
+    .equal {
+        background: #2ecc71;
+        grid-column: span 2;
+        color: black;
+    }
+
+    .clear {
+        background: #e74c3c;
+        grid-column: span 2;
+    }
+
+    .delete {
+        background: #9b59b6;
+    }
+</style>
 </head>
 <body>
 
 <div class="calculator">
-    <input type="text" class="display" id="display" disabled>
+    <div class="display">
+        <div class="history" id="history"></div>
+        <div class="result" id="result">0</div>
+    </div>
 
     <div class="buttons">
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button class="operator" onclick="append('/')">÷</button>
-        <button class="operator" onclick="append('*')">×</button>
+        <button class="clear" onclick="clearAll()">AC</button>
+        <button class="delete" onclick="deleteLast()">⌫</button>
+        <button class="operator" onclick="setOperator('/')">÷</button>
 
-        <button class="number" onclick="append('7')">7</button>
-        <button class="number" onclick="append('8')">8</button>
-        <button class="number" onclick="append('9')">9</button>
-        <button class="operator" onclick="append('-')">−</button>
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button class="operator" onclick="setOperator('*')">×</button>
 
-        <button class="number" onclick="append('4')">4</button>
-        <button class="number" onclick="append('5')">5</button>
-        <button class="number" onclick="append('6')">6</button>
-        <button class="operator" onclick="append('+')">+</button>
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button class="operator" onclick="setOperator('-')">−</button>
 
-        <button class="number" onclick="append('1')">1</button>
-        <button class="number" onclick="append('2')">2</button>
-        <button class="number" onclick="append('3')">3</button>
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button class="operator" onclick="setOperator('+')">+</button>
 
-        <button class="number" onclick="append('0')">0</button>
-        <button class="number" onclick="append('.')">.</button>
+        <button onclick="appendNumber('0')">0</button>
+        <button onclick="appendNumber('.')">.</button>
         <button class="equal" onclick="calculate()">=</button>
     </div>
 </div>
 
 <script>
-    const display = document.getElementById("display");
+    let current = '';
+    let previous = '';
+    let operator = '';
 
-    function append(value) {
-        display.value += value;
+    const result = document.getElementById('result');
+    const history = document.getElementById('history');
+
+    function appendNumber(num) {
+        if (num === '.' && current.includes('.')) return;
+        current += num;
+        updateDisplay();
     }
 
-    function clearDisplay() {
-        display.value = "";
+    function setOperator(op) {
+        if (current === '') return;
+        if (previous !== '') calculate();
+        operator = op;
+        previous = current;
+        current = '';
+        history.innerText = `${previous} ${operator}`;
     }
 
     function calculate() {
-        try {
-            display.value = eval(display.value);
-        } catch {
-            display.value = "Error";
+        if (previous === '' || current === '') return;
+
+        let computation;
+        const prev = parseFloat(previous);
+        const curr = parseFloat(current);
+
+        switch (operator) {
+            case '+': computation = prev + curr; break;
+            case '-': computation = prev - curr; break;
+            case '*': computation = prev * curr; break;
+            case '/': computation = curr === 0 ? 'Error' : prev / curr; break;
+            default: return;
         }
+
+        history.innerText = `${previous} ${operator} ${current} =`;
+        current = computation.toString();
+        previous = '';
+        operator = '';
+        updateDisplay();
     }
+
+    function clearAll() {
+        current = '';
+        previous = '';
+        operator = '';
+        history.innerText = '';
+        result.innerText = '0';
+    }
+
+    function deleteLast() {
+        current = current.slice(0, -1);
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        result.innerText = current || '0';
+    }
+
+    document.addEventListener('keydown', e => {
+        if (!isNaN(e.key) || e.key === '.') appendNumber(e.key);
+        if (['+', '-', '*', '/'].includes(e.key)) setOperator(e.key);
+        if (e.key === 'Enter') calculate();
+        if (e.key === 'Backspace') deleteLast();
+        if (e.key === 'Escape') clearAll();
+    });
 </script>
 
 </body>
 </html>
+
